@@ -116,8 +116,6 @@ async function main() {
   console.log("  • organizer@events.com");
   console.log("  • concert@events.com");
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("\n💡 Next: Test booking via API endpoints!");
-  console.log("   Example: POST /bookings with customer token\n");
 }
 
 main()

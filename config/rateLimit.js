@@ -28,10 +28,6 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-/**
- * Booking Rate Limiter
- * Prevent spam booking
- */
 export const bookingLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 menit
   max: 10, // max 10 bookings dalam 5 menit

@@ -1,9 +1,3 @@
-// middlewares/requestLogger.js
-
-/**
- * Simple request logger middleware
- * Logs: Method, URL, Status Code, Response Time
- */
 export const requestLogger = (req, res, next) => {
   const startTime = Date.now();
 

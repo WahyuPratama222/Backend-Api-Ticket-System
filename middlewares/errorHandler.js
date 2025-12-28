@@ -12,7 +12,7 @@ export const errorHandler = (err, req, res, next) => {
   if (err.name === "ZodError") {
     return res.status(400).json({
       status: "fail",
-      message: "Validation error",
+      message: "Kesalahan validasi",
       errors: err.issues.map((issue) => ({
         field: issue.path.join("."),
         message: issue.message,
@@ -66,7 +66,7 @@ export const errorHandler = (err, req, res, next) => {
     console.error("Unhandled Prisma Error Code:", err.code);
     return res.status(400).json({
       status: "fail",
-      message: "Database operation failed",
+      message: "Oprasi database gagal",
       code: err.code,
     });
   }
@@ -146,7 +146,7 @@ export const errorHandler = (err, req, res, next) => {
   // ===== FALLBACK: INTERNAL SERVER ERROR =====
   return res.status(500).json({
     status: "error",
-    message: "Internal Server Error",
+    message: "Kesalahan server internal",
     ...(process.env.NODE_ENV === "development" && {
       error: err.message,
       stack: err.stack,
