@@ -21,7 +21,7 @@ const createEventService = async (organizerId, data) => {
   });
 
   if (!organizer || organizer.role !== "organizer") {
-    throw new Error("User tidak valid atau bukan organizer");
+    throw new Error("Invalid user or not an organizer");
   }
 
   const event = await prisma.event.create({
@@ -55,7 +55,7 @@ const getEventByIdService = async (id) => {
     where: { id },
     select: eventSelect,
   });
-  if (!event) throw new Error("Event tidak ditemukan");
+  if (!event) throw new Error("Event not found");
   return event;
 };
 
@@ -68,14 +68,14 @@ const updateEventService = async (eventId, organizerId, data) => {
     },
   });
 
-  if (!event) throw new Error("Event tidak ditemukan");
-  if (event.organizerId !== organizerId) throw new Error("Bukan pemilik event");
+  if (!event) throw new Error("Event not found");
+  if (event.organizerId !== organizerId) throw new Error("Not the event owner");
 
   const totalBooked = event.bookings.reduce((sum, b) => sum + b.quantity, 0);
 
   const newCapacity = data.capacity ?? event.capacity;
   if (newCapacity < totalBooked) {
-    throw new Error(`Capacity tidak boleh kurang dari ${totalBooked}`);
+    throw new Error(`Capacity cannot be less than ${totalBooked}`);
   }
 
   const updatedEvent = await prisma.event.update({
@@ -102,9 +102,9 @@ const deleteEventService = async (eventId, organizerId) => {
     select: { organizerId, status: true },
   });
 
-  if (!event) throw new Error("Event tidak ditemukan");
-  if (event.organizerId !== organizerId) throw new Error("Bukan pemilik event");
-  if (event.status !== "available") throw new Error("Event tidak tersedia");
+  if (!event) throw new Error("Event not found");
+  if (event.organizerId !== organizerId) throw new Error("Not the event owner");
+  if (event.status !== "available") throw new Error("Event not available");
 
   await prisma.event.update({
     where: { id: eventId },

@@ -16,7 +16,7 @@ const router = express.Router();
 router.get("/health", (req, res) => {
   res.status(200).json({
     status: "success",
-    message: "Server berjalan dengan baik",
+    message: "The server is running well",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
   });
@@ -25,7 +25,7 @@ router.get("/health", (req, res) => {
 router.get("/", (req, res) => {
   res.status(200).json({
     status: "success",
-    message: "Selamat Datang di API Sistem Ticket",
+    message: "Welcome to the Ticket System API",
     version: "1.0.0",
     endpoints: {
       health: "/health",

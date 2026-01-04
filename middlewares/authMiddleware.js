@@ -17,7 +17,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 
   // Check if token exists
   if (!token) {
-    throw new Error("Tidak terautentikasi, token tidak ditemukan");
+    throw new Error("Not authenticated, token not found");
   }
 
   try {
@@ -38,7 +38,7 @@ export const protect = asyncHandler(async (req, res, next) => {
     });
 
     if (!user) {
-      throw new Error("Tidak terautentikasi, user tidak ditemukan");
+      throw new Error("Not authenticated, user not found");
     }
 
     // Attach user to request object
@@ -47,10 +47,10 @@ export const protect = asyncHandler(async (req, res, next) => {
   } catch (error) {
     // Handle JWT specific errors
     if (error.name === "JsonWebTokenError") {
-      throw new Error("Tidak terautentikasi, token tidak valid");
+      throw new Error("Not authenticated, invalid token");
     }
     if (error.name === "TokenExpiredError") {
-      throw new Error("Token sudah kadaluarsa, silakan login kembali");
+      throw new Error("Token has expired, please log in again");
     }
 
     // Re-throw other errors
@@ -63,12 +63,12 @@ export const authorize = (...roles) => {
   return (req, res, next) => {
     // Check if user exists (should be attached by protect middleware)
     if (!req.user) {
-      throw new Error("Tidak terautentikasi");
+      throw new Error("Not authenticated");
     }
 
     // Check if user role is allowed
     if (!roles.includes(req.user.role)) {
-      throw new Error("Akses ditolak, role user tidak sesuai");
+      throw new Error("Access denied, user role does not match");
     }
 
     next();

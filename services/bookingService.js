@@ -29,14 +29,14 @@ const createBookingService = async (customerId, data) => {
       eventId
     );
 
-    if (!event[0]) throw new Error("Event tidak ditemukan");
+    if (!event[0]) throw new Error("Event not found");
 
     const eventRow = event[0];
 
     if (eventRow.status !== "available")
-      throw new Error("Event tidak tersedia");
+      throw new Error("Event not available");
     if (eventRow.available_seat < quantity)
-      throw new Error("Kursi tidak cukup");
+      throw new Error("Not enough seats available");
 
     // Update availableSeat & status event
     await tx.event.update({
@@ -101,7 +101,7 @@ const getBookingByIdService = async (id) => {
     where: { id },
     select: bookingSelect,
   });
-  if (!booking) throw new Error("Booking tidak ditemukan");
+  if (!booking) throw new Error("Booking not found");
   return booking;
 };
 
