@@ -24,7 +24,7 @@ const getTicketByIdService = async (id) => {
     where: { id },
     select: ticketSelect,
   });
-  if (!ticket) throw new Error("Ticket tidak ditemukan");
+  if (!ticket) throw new Error("Ticket not found");
   return ticket;
 };
 
@@ -33,8 +33,8 @@ const markTicketUsedService = async (id) => {
   const ticket = await prisma.ticket.findUnique({
     where: { id },
   });
-  if (!ticket) throw new Error("Ticket tidak ditemukan");
-  if (ticket.status === "used") throw new Error("Ticket sudah digunakan");
+  if (!ticket) throw new Error("Ticket not found");
+  if (ticket.status === "used") throw new Error("Ticket has already been used");
 
   const updatedTicket = await prisma.ticket.update({
     where: { id },

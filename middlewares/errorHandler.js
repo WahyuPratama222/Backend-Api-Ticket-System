@@ -73,10 +73,10 @@ export const errorHandler = (err, req, res, next) => {
 
   // ===== CUSTOM NOT FOUND ERRORS =====
   const notFoundErrors = [
-    "User tidak ditemukan",
-    "Event tidak ditemukan",
-    "Booking tidak ditemukan",
-    "Ticket tidak ditemukan",
+    "User not found",
+    "Event not found",
+    "Booking not found",
+    "Ticket not found",
   ];
 
   if (notFoundErrors.includes(err.message)) {
@@ -88,14 +88,11 @@ export const errorHandler = (err, req, res, next) => {
 
   // ===== BUSINESS LOGIC / CUSTOM ERRORS =====
   const customErrors = {
-    "Bukan pemilik event": 403,
-    "Event tidak tersedia": 400,
-    "Kursi tidak cukup": 400,
-    "User ID tidak valid": 400,
-    "Event ID tidak valid": 400,
-    "Booking ID tidak valid": 400,
-    "Ticket ID tidak valid": 400,
+    "Not the event owner": 403,
+    "Event not available": 400,
+    "Not enough seats available": 400,
     "Invalid email or password": 401,
+    "Ticket has already been used": 400,
   };
 
   if (customErrors[err.message]) {

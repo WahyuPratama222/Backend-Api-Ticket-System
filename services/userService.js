@@ -42,7 +42,7 @@ const getUserByIdService = async (id) => {
     select: userSelect,
   });
 
-  if (!user) throw new Error("User tidak ditemukan");
+  if (!user) throw new Error("User not found");
   return user;
 };
 
