@@ -101,7 +101,7 @@ const getBookingByIdService = async (id) => {
     where: { id },
     select: bookingSelect,
   });
-  if (!booking) throw new Error("Booking tidak ditemukan");
+  if (!booking) throw new Error("Booking not found");
   return booking;
 };
 

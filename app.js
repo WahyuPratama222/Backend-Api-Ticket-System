@@ -53,7 +53,7 @@ app.use("/", apiRoutes);
 app.use((req, res) => {
   res.status(404).json({
     status: "fail",
-    message: `Route ${req.originalUrl} tidak ditemukan`,
+    message: `Route ${req.originalUrl} not found`,
   });
 });
 

@@ -12,7 +12,7 @@ export const errorHandler = (err, req, res, next) => {
   if (err.name === "ZodError") {
     return res.status(400).json({
       status: "fail",
-      message: "Kesalahan validasi",
+      message: "Validation error",
       errors: err.issues.map((issue) => ({
         field: issue.path.join("."),
         message: issue.message,
@@ -33,7 +33,7 @@ export const errorHandler = (err, req, res, next) => {
 
     return res.status(400).json({
       status: "fail",
-      message: `${friendlyField} sudah digunakan`,
+      message: `${friendlyField}  is already in use`,
     });
   }
 
@@ -41,7 +41,7 @@ export const errorHandler = (err, req, res, next) => {
   if (err.code === "P2025") {
     return res.status(404).json({
       status: "fail",
-      message: "Data tidak ditemukan",
+      message: "Data not found",
     });
   }
 
@@ -49,7 +49,7 @@ export const errorHandler = (err, req, res, next) => {
   if (err.code === "P2003") {
     return res.status(400).json({
       status: "fail",
-      message: "Referensi data tidak valid",
+      message: "Invalid data reference",
     });
   }
 
@@ -57,7 +57,7 @@ export const errorHandler = (err, req, res, next) => {
   if (err.code === "P2014") {
     return res.status(400).json({
       status: "fail",
-      message: "ID tidak valid",
+      message: "Invalid ID",
     });
   }
 
@@ -66,7 +66,7 @@ export const errorHandler = (err, req, res, next) => {
     console.error("Unhandled Prisma Error Code:", err.code);
     return res.status(400).json({
       status: "fail",
-      message: "Oprasi database gagal",
+      message: "Database operation failed",
       code: err.code,
     });
   }
@@ -95,7 +95,7 @@ export const errorHandler = (err, req, res, next) => {
     "Event ID tidak valid": 400,
     "Booking ID tidak valid": 400,
     "Ticket ID tidak valid": 400,
-    "Email atau password salah": 401,
+    "Invalid email or password": 401,
   };
 
   if (customErrors[err.message]) {
@@ -107,10 +107,10 @@ export const errorHandler = (err, req, res, next) => {
 
   // ===== AUTH / PROTECT ERRORS =====
   const authErrors = [
-    "Tidak terautentikasi, token tidak ditemukan",
-    "Tidak terautentikasi, token tidak valid",
-    "Tidak terautentikasi, user tidak ditemukan",
-    "Token sudah kadaluarsa, silakan login kembali",
+    "Not authenticated, token not found",
+    "Not authenticated, invalid token",
+    "Not authenticated, user not found",
+    "Token has expired, please log in again",
   ];
 
   if (authErrors.includes(err.message)) {
@@ -121,7 +121,7 @@ export const errorHandler = (err, req, res, next) => {
   }
 
   // ===== ROLE-BASED ERRORS =====
-  if (err.message === "Akses ditolak, role user tidak sesuai") {
+  if (err.message === "Access denied, user role does not match") {
     return res.status(403).json({
       status: "fail",
       message: err.message,
@@ -132,21 +132,21 @@ export const errorHandler = (err, req, res, next) => {
   if (err.name === "JsonWebTokenError") {
     return res.status(401).json({
       status: "fail",
-      message: "Token tidak valid",
+      message: "Invalid token",
     });
   }
 
   if (err.name === "TokenExpiredError") {
     return res.status(401).json({
       status: "fail",
-      message: "Token sudah kadaluarsa",
+      message: "Token has expired",
     });
   }
 
   // ===== FALLBACK: INTERNAL SERVER ERROR =====
   return res.status(500).json({
     status: "error",
-    message: "Kesalahan server internal",
+    message: "Internal server error",
     ...(process.env.NODE_ENV === "development" && {
       error: err.message,
       stack: err.stack,

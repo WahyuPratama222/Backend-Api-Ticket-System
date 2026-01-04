@@ -4,10 +4,10 @@ import { generateToken } from "../utils/token.js";
 
 export const loginService = async (email, password) => {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) throw new Error("Email atau password salah");
+  if (!user) throw new Error("Invalid email or password");
 
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new Error("Email atau password salah");
+  if (!valid) throw new Error("Invalid email or password");
 
   const token = generateToken(user);
 
