@@ -1,12 +1,17 @@
 // middlewares/errorHandler.js
 
-export const errorHandler = (err, req, res, next) => {
+const logError = (err) => {
   // Log error untuk debugging
   console.error("=== ERROR HANDLER ===");
   console.error("Message:", err.message);
   console.error("Stack:", err.stack);
   console.error("Code:", err.code);
   console.error("=====================");
+};
+
+export const errorHandler = (err, req, res, next) => {
+  // Log Error (Debugging)
+  logError(err);
 
   // ===== ZOD VALIDATION ERROR =====
   if (err.name === "ZodError") {
@@ -67,62 +72,46 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(400).json({
       status: "fail",
       message: "Database operation failed",
-      code: err.code,
     });
   }
 
-  // ===== CUSTOM NOT FOUND ERRORS =====
-  const notFoundErrors = [
-    "User not found",
-    "Event not found",
-    "Booking not found",
-    "Ticket not found",
-  ];
+  // ===== CUSTOM ERROR WITH STATUS CODE ====
+  const errorMap = {
+    //404 Errors
+    "User not found": 404,
+    "Event not found": 404,
+    "Booking not found": 404,
+    "Ticket not found": 404,
 
-  if (notFoundErrors.includes(err.message)) {
-    return res.status(404).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-
-  // ===== BUSINESS LOGIC / CUSTOM ERRORS =====
-  const customErrors = {
+    //403 Errors
     "Not the event owner": 403,
+    "Access denied": 403,
+
+    //401 Errors
+    "Invalid email or password": 401,
+    "Not authenticated, token not found": 401,
+    "Not authenticated, invalid token": 401,
+    "Not authenticated, user not found": 401,
+    "Token has expired, please log in again": 401,
+
+    //400 Errors
     "Event not available": 400,
     "Not enough seats available": 400,
-    "Invalid email or password": 401,
     "Ticket has already been used": 400,
+    "Capacity cannot be less than": 400, // Partial match
+
+    //403 Role-based
+    "Access denied, user role does not match": 403,
   };
 
-  if (customErrors[err.message]) {
-    return res.status(customErrors[err.message]).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-
-  // ===== AUTH / PROTECT ERRORS =====
-  const authErrors = [
-    "Not authenticated, token not found",
-    "Not authenticated, invalid token",
-    "Not authenticated, user not found",
-    "Token has expired, please log in again",
-  ];
-
-  if (authErrors.includes(err.message)) {
-    return res.status(401).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-
-  // ===== ROLE-BASED ERRORS =====
-  if (err.message === "Access denied, user role does not match") {
-    return res.status(403).json({
-      status: "fail",
-      message: err.message,
-    });
+  //Check for exact match or partial match
+  for (const [errorMsg, statusCode] of Object.entries(errorMap)) {
+    if (err.message === errorMsg || err.message.includes(errorMsg)) {
+      return res.status(statusCode).json({
+        status: "fail",
+        message: err.message,
+      });
+    }
   }
 
   // ===== JWT ERRORS =====
@@ -143,10 +132,9 @@ export const errorHandler = (err, req, res, next) => {
   // ===== FALLBACK: INTERNAL SERVER ERROR =====
   return res.status(500).json({
     status: "error",
-    message: "Internal server error",
-    ...(process.env.NODE_ENV === "development" && {
-      error: err.message,
-      stack: err.stack,
-    }),
+    message:
+      process.env.NODE_ENV === "production"
+        ? "Internal server error"
+        : err.message,
   });
 };
